@@ -26,6 +26,14 @@ const transactionController = {
         } catch (error) {
             res.status(400).send(error);
         }
+    },
+    async groupTransactionsByEdge(req, res) {
+        try {
+            const aggregatedTransactions = await transactionService.groupTransactionsByEdge();
+            res.json(aggregatedTransactions);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 
 }
