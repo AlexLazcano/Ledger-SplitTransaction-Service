@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const { Schema, model } = mongoose;
 
-const transactionScheme = new Schema({
+const splitTransactionSchema = new Schema({
     from: { type: Schema.Types.ObjectId, ref: 'User' },
     to: { type: Schema.Types.ObjectId, ref: 'User' },
     amount: Number,
@@ -12,5 +12,5 @@ const transactionScheme = new Schema({
 
 });
 
-const Transaction = model('Transaction', transactionScheme);
+const Transaction = model('SplitTransaction', splitTransactionSchema);
 module.exports = Transaction;

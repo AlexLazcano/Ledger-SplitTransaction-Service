@@ -1,25 +1,25 @@
-const Transactions = require('../models/Transaction.model');
+const SplitTransactions = require('../models/SplitTransaction.model');
 
-const transactionService = {
-    async createTransaction(user_id1, user_id2, amount, date, description) {
+const splitTransactionService = {
+    async createSplitTransaction(user_id1, user_id2, amount, date, description) {
 
         try {
 
-            const newTransaction = new Transactions({ from: user_id1, to: user_id2, amount, date, description });
+            const newSplitTransaction = new SplitTransactions({ from: user_id1, to: user_id2, amount, date, description });
 
-            const savedTransaction = await newTransaction.save();
+            const savedSplitTransaction = await newSplitTransaction.save();
 
-            console.log('Transaction created:', savedTransaction);
-            return savedTransaction;
+            console.log('Transaction created:', savedSplitTransaction);
+            return savedSplitTransaction;
         } catch (error) {
             throw new Error('Error creating Transaction');
         }
     },
 
-    async getTransactionsBySender(userId) {
+    async getSplitTransactionsBySender(userId) {
         try {
 
-            const transactions = await Transactions.find({ from: userId });
+            const transactions = await SplitTransactions.find({ from: userId });
 
             return transactions;
         } catch (error) {
@@ -27,9 +27,9 @@ const transactionService = {
         }
     },
 
-    async groupTransactionsByEdge() {
+    async groupSplitTransactionsByEdge() {
         try {
-            const aggregatedTransactions = await Transactions.aggregate([
+            const aggregatedSplitTransactions = await SplitTransactions.aggregate([
                 {
                     $group: {
                         _id: { from: "$from", to: "$to" }, // Group by the sender and receiver's user IDs
@@ -66,7 +66,7 @@ const transactionService = {
                     }
                 }
             ]);
-            return aggregatedTransactions;
+            return aggregatedSplitTransactions;
         } catch (error) {
             throw error;
         }
@@ -77,4 +77,4 @@ const transactionService = {
     // Additional methods for updating, deleting, etc.
 };
 
-module.exports = transactionService;
+module.exports = splitTransactionService;

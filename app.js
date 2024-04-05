@@ -6,14 +6,14 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 
 const connectToDatabase = require('./config/db_conn.js');
-const transactionRoutes = require('./routers/transactions.routes.js');
+const splitTransactionRoutes = require('./routers/splitTransactions.routes.js');
 
 app.use(cors());
 app.use(express.json());
-console.log('Hello from transaction-service');
+console.log('Hello from splitTransaction-service');
 
 
-app.use('/transactions', transactionRoutes);
+app.use('/splitTransactions', splitTransactionRoutes);
 
 connectToDatabase().then(db => {
     app.listen(PORT, () => {
