@@ -19,6 +19,8 @@ const connectToDatabase = async () => {
         const db = mongoose.connection;
         
         cachedDb = db; // Cache the database connection
+
+        console.log("Connected to MongoDB");
         return db;
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);

@@ -1,21 +1,17 @@
 
 const request = require('supertest');
 const app = require('../app');
-const mongoose = require('mongoose');
 
 
 describe('Split Transaction Service', () => {
 
-    let server;
-
-    beforeAll(done => {
-        server = app.listen(3000, done);
-    });
+    // beforeAll(done => {
+       
+    // });
 
     afterAll(done => {
-        
-        mongoose.connection.close();
-        server.close(done);
+        app.close();
+        done();
     });
 
 
@@ -48,15 +44,10 @@ describe('Split Transaction Service', () => {
         expect(description).toBe(reqBody.description);
 
 
-       await request(app)
+        await request(app)
             .delete(`/splitTransactions/${_id}`)
             .expect(200);
-
-        
         // Add more assertions as needed
     });
-
-
-
 
 });
