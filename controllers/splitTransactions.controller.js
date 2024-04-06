@@ -6,10 +6,10 @@ const splitTransactionController = {
 
     async createSplitTransaction(req, res) {
         try {
-            const { from, to, amount, description } = req.body;
+            const { from, to, total, description, splitAmount } = req.body;
             const date = new Date();
 
-            const transaction = await splitTransactionService.createSplitTransaction(from, to, amount, date, description || "");
+            const transaction = await splitTransactionService.createSplitTransaction(from, to, total, splitAmount,  date, description || "");
             res.status(201).json(
                 transaction
             );

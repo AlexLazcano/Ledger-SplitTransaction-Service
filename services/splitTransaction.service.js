@@ -1,11 +1,11 @@
 const SplitTransactions = require('../models/SplitTransaction.model');
 
 const splitTransactionService = {
-    async createSplitTransaction(user_id1, user_id2, amount, date, description) {
+    async createSplitTransaction(user_id1, user_id2, total, splitAmount, date, description) {
 
         try {
 
-            const newSplitTransaction = new SplitTransactions({ from: user_id1, to: user_id2, amount, date, description });
+            const newSplitTransaction = new SplitTransactions({ from: user_id1, to: user_id2, total: total, splitAmount: splitAmount, date, description });
 
             const savedSplitTransaction = await newSplitTransaction.save();
 
