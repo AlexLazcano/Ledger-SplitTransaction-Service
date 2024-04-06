@@ -6,7 +6,7 @@ const splitTransactionService = {
 
         try {
 
-            const newSplitTransaction = new SplitTransactions({ from: user_id1, to: user_id2, total: total, splitAmount: splitAmount, date, description });
+            const newSplitTransaction = new SplitTransactions({ sender: user_id1, recipient: user_id2, total: total, splitAmount: splitAmount, date, description });
 
             const savedSplitTransaction = await newSplitTransaction.save();
 
@@ -19,21 +19,25 @@ const splitTransactionService = {
     async getSplitTransactionsByFilter(filter) {
         try {
             const filteredSplitTransactions = await SplitTransactions.find(filter)
-                .populate('from', 'name _id')
-                .populate('to', 'name _id')
+                .populate('sender', 'name _id')
+                .populate('recipient', 'name _id')
                 .lean()
                 .exec();
 
-            // Convert ObjectId to string for the populated 'from' field
+            // Convert ObjectId recipient string for the populated 'sender' field
             filteredSplitTransactions.forEach(transaction => {
-                if (transaction.from && transaction.from._id) {
-                    transaction.from.id = transaction.from._id.toString();
-                    delete transaction.from._id;
+                if (transaction.sender && transaction.sender._id) {
+                    transaction.sender.id = transaction.sender._id.toString();
+                    delete transaction.sender._id;
                 }
-                if (transaction.to && transaction.to._id) {
-                    transaction.to.id = transaction.to._id.toString();
-                    delete transaction.to._id;
+                if (transaction.recipient && transaction.recipient._id) {
+                    transaction.recipient.id = transaction.recipient._id.toString();
+                    delete transaction.recipient._id;
                 }
+                if(transaction.date) {
+                    transaction.date = transaction.date.toISOString().slice(0, -5) + "Z";
+                }
+
             });
 
 
@@ -46,7 +50,7 @@ const splitTransactionService = {
     },
     async deleteSplitTransactionsByFilter(filter) {
         try {
-            // Use the deleteMany method to remove multiple documents based on the filter
+            // Use the deleteMany method recipient remove multiple documents based on the filter
             const result = await SplitTransactions.deleteMany(filter);
             console.log(`${result.deletedCount} split transactions deleted`);
             return result;
@@ -58,7 +62,7 @@ const splitTransactionService = {
     async getSplitTransactionsBySender(userId) {
         try {
 
-            const transactions = await SplitTransactions.find({ from: userId });
+            const transactions = await SplitTransactions.find({ sender: userId });
 
             return transactions;
         } catch (error) {
@@ -71,23 +75,23 @@ const splitTransactionService = {
             const aggregatedSplitTransactions = await SplitTransactions.aggregate([
                 {
                     $group: {
-                        _id: { from: "$from", to: "$to" }, // Group by the sender and receiver's user IDs
+                        _id: { sender: "$sender", recipient: "$recipient" }, // Group by the sender and receiver's user IDs
                         totalAmount: { $sum: "$amount" }, // Calculate the total amount for each sender-receiver pair
                         count: { $sum: 1 } // Count the number of transactions for each sender-receiver pair
                     }
                 },
                 {
                     $lookup: {
-                        from: "users", // Assuming the user collection name is "users"
-                        localField: "_id.from",
+                        sender: "users", // Assuming the user collection name is "users"
+                        localField: "_id.sender",
                         foreignField: "_id",
                         as: "fromUser"
                     }
                 },
                 {
                     $lookup: {
-                        from: "users",
-                        localField: "_id.to",
+                        sender: "users",
+                        localField: "_id.recipient",
                         foreignField: "_id",
                         as: "toUser"
                     }
@@ -95,11 +99,11 @@ const splitTransactionService = {
                 {
                     $project: {
                         _id: {
-                            from: "$_id.from",
-                            to: "$_id.to"
+                            sender: "$_id.sender",
+                            recipient: "$_id.recipient"
                         },
-                        from: { $arrayElemAt: ["$fromUser.name", 0] },
-                        to: { $arrayElemAt: ["$toUser.name", 0] },
+                        sender: { $arrayElemAt: ["$fromUser.name", 0] },
+                        recipient: { $arrayElemAt: ["$toUser.name", 0] },
                         totalAmount: 1,
                         count: 1
                     }

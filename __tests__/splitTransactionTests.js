@@ -19,8 +19,8 @@ describe('Split Transaction Service', () => {
     test('POST /createSplitTransaction should create a new split transaction', async () => {
 
         const reqBody = {
-            from: '65ea41d1354b412b1d53d2f7',
-            to: '65eb8612d3a9db14c0e4c488',
+            sender: '65ea41d1354b412b1d53d2f7',
+            recipient: '65eb8612d3a9db14c0e4c488',
             total: 100,
             splitAmount: 50,
             date: new Date(),
@@ -33,11 +33,11 @@ describe('Split Transaction Service', () => {
             .expect(201);
 
 
-        const { from, to, total, splitAmount, date, description, _id } = response.body;
+        const { sender, recipient, total, splitAmount, date, description, _id } = response.body;
 
         expect(_id).toBeDefined();
-        expect(from).toBe(reqBody.from);
-        expect(to).toBe(reqBody.to);
+        expect(sender).toBe(reqBody.sender);
+        expect(recipient).toBe(reqBody.recipient);
         expect(total).toBe(reqBody.total);
         expect(splitAmount).toBe(reqBody.splitAmount);
         expect(response.body).toHaveProperty('date');
@@ -53,8 +53,8 @@ describe('Split Transaction Service', () => {
     test('POST /getAllSplitTransactions should create a new split transaction', async () => {
 
         const reqBody = {
-            from: '65ea41d1354b412b1d53d2f7',
-            to: '65eb8612d3a9db14c0e4c488',
+            sender: '65ea41d1354b412b1d53d2f7',
+            recipient: '65eb8612d3a9db14c0e4c488',
             total: 100,
             splitAmount: 50,
             date: new Date(),
@@ -72,13 +72,16 @@ describe('Split Transaction Service', () => {
             .expect(200);
 
 
-        const { from, to, total, splitAmount, date, description, _id } = getResponse.body[0];
+        const { sender, recipient, total, splitAmount, date, description, _id } = getResponse.body[0];
 
         console.log("first", getResponse.body[0]);
 
         expect(_id).toBeDefined();
-        expect(from).toBe(reqBody.from);
-        expect(to).toBe(reqBody.to);
+        expect(sender).toHaveProperty('name');
+        expect(sender.id).toBe(reqBody.sender);
+        expect(recipient).toHaveProperty('id');
+        expect(recipient).toHaveProperty('name');
+        expect(recipient.id).toBe(reqBody.recipient);
         expect(total).toBe(reqBody.total);
         expect(splitAmount).toBe(reqBody.splitAmount);
         

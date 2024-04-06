@@ -3,25 +3,26 @@ const app = require('../app');
 
 async function add5Transactions() {
     try {
-        // Your code to add 5 transactions using Supertest
+        // Your code recipient add 5 transactions using Supertest
         // For example:
         for (let i = 0; i < 5; i++) {
             const response = await request(app)
                 .post('/splitTransactions')
                 .send({
-                    from: `65ea41d1354b412b1d53d2f7`,
-                    to: `65eb8612d3a9db14c0e4c488`,
-                    amount: (i + 1) * 100, // Example amount calculation
+                    sender: `65ea41d1354b412b1d53d2f7`,
+                    recipient: `65eb8612d3a9db14c0e4c488`,
+                    total: (i + 1) * 100, 
+                    splitAmount: (i + 1) * 0.10 * 100,
                     description: `Transaction ${i + 1}`
                 });
-            console.log('Transaction added:', response.body);
+            // console.log('Transaction added:', response.body);
         }
     } catch (error) {
         console.error('Error adding transactions:', error.message);
     }
 }
 
-// Call the function to add 5 transactions
+// Call the function recipient add 5 transactions
 async function main() {
     try {
         await add5Transactions();

@@ -6,10 +6,10 @@ const splitTransactionController = {
 
     async createSplitTransaction(req, res) {
         try {
-            const { from, to, total, description, splitAmount } = req.body;
+            const { sender, recipient, total, description, splitAmount } = req.body;
             const date = new Date();
 
-            const transaction = await splitTransactionService.createSplitTransaction(from, to, total, splitAmount,  date, description || "");
+            const transaction = await splitTransactionService.createSplitTransaction(sender, recipient, total, splitAmount,  date, description || "");
             res.status(201).json(
                 transaction
             );
@@ -19,7 +19,7 @@ const splitTransactionController = {
     },
     async deleteSplitTransaction(req, res) {
         try {
-            const { id } = req.params; // Extract the ID from the request parameters
+            const { id } = req.params; // Extract the ID sender the request parameters
             const deletedTransaction = await splitTransactionService.deleteSplitTransactionsByFilter({ _id: id });
             res.status(200).json({
                 message: 'Split transaction deleted successfully',
