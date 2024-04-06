@@ -17,6 +17,20 @@ const splitTransactionController = {
             res.status(400).send(error);
         }
     },
+    async deleteSplitTransaction(req, res) {
+        try {
+            const { id } = req.params; // Extract the ID from the request parameters
+            const deletedTransaction = await splitTransactionService.deleteSplitTransactionsByFilter({ _id: id });
+            res.status(200).json({
+                message: 'Split transaction deleted successfully',
+                deletedTransaction
+            });
+        } catch (error) {
+            res.status(400).json({
+                error: error.message
+            });
+        }
+    },
     async getSplitTransactionsBySender(req, res) {
         try {
             const { userId } = req.params; // Assuming userId is passed as a parameter in the request

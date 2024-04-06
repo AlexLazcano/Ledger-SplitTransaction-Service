@@ -36,8 +36,11 @@ describe('Split Transaction Service', () => {
             .send(reqBody)
             .expect(201);
 
-        const { from, to, total, splitAmount, date, description } = response.body;
+        console.log('Response:', response.body);
 
+        const { from, to, total, splitAmount, date, description, _id } = response.body;
+
+        expect(_id).toBeDefined();
         expect(from).toBe(reqBody.from);
         expect(to).toBe(reqBody.to);
         expect(total).toBe(reqBody.total);
@@ -46,6 +49,11 @@ describe('Split Transaction Service', () => {
         expect(description).toBe(reqBody.description);
 
 
+        const deleteResponse = await request(app)
+            .delete(`/splitTransactions/${_id}`)
+            .expect(200);
+
+        console.log('Delete Response:', deleteResponse.body);
         // Add more assertions as needed
     });
 

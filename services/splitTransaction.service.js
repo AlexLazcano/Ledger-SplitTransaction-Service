@@ -16,6 +16,17 @@ const splitTransactionService = {
         }
     },
 
+    async deleteSplitTransactionsByFilter(filter) {
+        try {
+            // Use the deleteMany method to remove multiple documents based on the filter
+            const result = await SplitTransactions.deleteMany(filter);
+            console.log(`${result.deletedCount} split transactions deleted`);
+            return result;
+        } catch (error) {
+            throw new Error('Error deleting split transactions');
+        }
+    },
+
     async getSplitTransactionsBySender(userId) {
         try {
 
