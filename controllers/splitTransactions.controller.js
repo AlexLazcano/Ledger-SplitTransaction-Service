@@ -31,6 +31,25 @@ const splitTransactionController = {
             });
         }
     },
+    async  getAllSplitTransactions(req, res) {
+        try {
+    
+            const transactions = await splitTransactionService.getSplitTransactionsByFilter({});
+            
+            // Check if transactions are empty or null
+            if (!transactions || transactions.length === 0) {
+                return res.status(404).json({ message: 'No transactions found for the sender.' });
+            }
+    
+            // Respond with the retrieved transactions
+            res.status(200).json(transactions);
+        } catch (error) {
+            // Handle errors properly
+            console.error('Error fetching split transactions by sender:', error);
+            res.status(500).json({ message: 'Internal server error.' });
+        }
+    },
+    
     async getSplitTransactionsBySender(req, res) {
         try {
             const { userId } = req.params; // Assuming userId is passed as a parameter in the request

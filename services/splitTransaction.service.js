@@ -1,4 +1,5 @@
 const SplitTransactions = require('../models/SplitTransaction.model');
+const User = require('../models/User.model');
 
 const splitTransactionService = {
     async createSplitTransaction(user_id1, user_id2, total, splitAmount, date, description) {
@@ -15,7 +16,34 @@ const splitTransactionService = {
             throw new Error('Error creating Transaction');
         }
     },
+    async getSplitTransactionsByFilter(filter) {
+        try {
+            const filteredSplitTransactions = await SplitTransactions.find(filter)
+                .populate('from', 'name _id')
+                .populate('to', 'name _id')
+                .lean()
+                .exec();
 
+            // Convert ObjectId to string for the populated 'from' field
+            filteredSplitTransactions.forEach(transaction => {
+                if (transaction.from && transaction.from._id) {
+                    transaction.from.id = transaction.from._id.toString();
+                    delete transaction.from._id;
+                }
+                if (transaction.to && transaction.to._id) {
+                    transaction.to.id = transaction.to._id.toString();
+                    delete transaction.to._id;
+                }
+            });
+
+
+
+            console.log('Filtered Split Transactions:', filteredSplitTransactions);
+            return filteredSplitTransactions;
+        } catch (error) {
+            throw new Error('Error fetching Split Transactions by filter');
+        }
+    },
     async deleteSplitTransactionsByFilter(filter) {
         try {
             // Use the deleteMany method to remove multiple documents based on the filter

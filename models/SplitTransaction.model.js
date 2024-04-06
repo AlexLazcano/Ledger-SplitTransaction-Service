@@ -6,11 +6,11 @@ const { Schema, model } = mongoose;
 const splitTransactionSchema = new Schema({
     from: { type: Schema.Types.ObjectId, ref: 'User' },
     to: { type: Schema.Types.ObjectId, ref: 'User' },
-    total: Number,
-    splitAmount: Number,
+    total: {required: true, type: Number},
+    splitAmount: {required: true, type: Number},
     date: Date,
     description: String
 });
 
-const SplitTransaction = model('SplitTransaction', splitTransactionSchema);
-module.exports = SplitTransaction;
+const SplitTransactionModel = model('SplitTransaction', splitTransactionSchema);
+module.exports = SplitTransactionModel;
