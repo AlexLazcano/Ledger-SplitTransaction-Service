@@ -9,7 +9,9 @@ const splitTransactionController = {
             const { sender, recipient, total, description, splitAmount } = req.body;
             const date = new Date();
 
-            const transaction = await splitTransactionService.createSplitTransaction(sender, recipient, total, splitAmount,  date, description || "");
+            console.log("Body",req.body);
+
+            const transaction = await splitTransactionService.createSplitTransaction(sender.id, recipient.id, total, splitAmount,  date, description || "");
             res.status(201).json(
                 transaction
             );
