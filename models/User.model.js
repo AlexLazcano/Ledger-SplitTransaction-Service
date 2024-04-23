@@ -1,12 +1,34 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db_conn');
 
+console.log('defining model user');
 
-const { Schema, model } = mongoose;
+const User = sequelize.define('Users',
+    {
+        user_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    },
+    {
+        tableName: 'Users',
+        timestamps: false
+    }
+);
 
-console.log('User.model.js');
-const userSchema = new Schema({
-    name: String,
-});
+// (async () => {
+//     console.log('Creating User table');
+//     try {
+//         await User.sync({force: false});
+//         console.log('User table created');
+//     } catch (error) {
+//         console.error('Error creating User table:', error);
+//     }
+// })();
 
-const User = model('User', userSchema);
 module.exports = User;
