@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
 
 let cachedDb = null;
 
@@ -8,55 +8,34 @@ const connectToDatabase = async () => {
         return cachedDb;
     }
 
-    const connectionString = process.env.MONGO_URL || "";
-    console.log('Connecting to MongoDB', connectionString);
+    // const connectionString = process.env.MYSQL_URL || "";
+    // console.log('Connecting to MYSQL', connectionString);
+    const database = process.env.MYSQL_DATABASE || 'Ledger';
+    const username = process.env.MYSQL_USERNAME || 'root';
+    const password = process.env.MYSQL_PASSWORD || 'password';
+
 
     try {
-        await mongoose.connect(connectionString, {
-            dbName: "ledger"
+        const sequelize = new Sequelize(database, username, password, {
+            host: 'localhost',
+            dialect: 'mysql',
+            logging: false
         });
 
-        const db = mongoose.connection;
+        sequelize.authenticate().then(() => {
+            console.log('Connection has been established successfully to MYSQL');
+        }).catch(err => {
+            console.error('Unable to connect to the database:', err);
+        });
         
-        cachedDb = db; // Cache the database connection
+        cachedDb = sequelize; // Cache the database connection
 
-        console.log("Connected to MongoDB");
-        return db;
+        console.log("Connected to MYSQL");
+        return cachedDb;
     } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
+        console.error("Error connecting to MYSQL:", error);
         throw error;
     }
 };
 
 module.exports = connectToDatabase;
-
-
-
-// let dbClient;
-
-// async function connectToDatabase() {
-
-//     if (dbClient && dbClient.isConnected()) {
-//         console.warn('Trying to connect to database again');
-//         return dbClient;
-//     }
-
-
-//     const uri = process.env.MONGO_URL;
-
-//     dbClient = new MongoClient(uri);
-
-//     try {
-//         await dbClient.connect();
-//         console.log('Connected to MongoDB');
-
-//         const dbName = dbClient.db().databaseName;
-//         console.log('Database name:', dbName);  
-//         return dbClient.db();
-//     } catch (err) {
-//         console.error('Error connecting to MongoDB:', err);
-//         throw err;
-//     }
-// }
-
-// module.exports = connectToDatabase;

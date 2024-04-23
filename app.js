@@ -14,7 +14,7 @@ app.use(express.json());
 console.log('Hello from splitTransaction-service');
 
 
-app.use('/splitTransactions', splitTransactionRoutes);
+// app.use('/splitTransactions', splitTransactionRoutes);
 
 let server = null;
 
@@ -25,7 +25,7 @@ connectToDatabase().then(db => {
     });
 
 }).catch(err => {
-    console.error('Error connecting to MongoDB:', err);
+    console.error('Error connecting to MYSQL:', err);
     process.exit(1);
 });
 
