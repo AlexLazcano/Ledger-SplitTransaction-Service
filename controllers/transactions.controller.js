@@ -8,8 +8,6 @@ const TransactionController = {
             const { sender, recipient, total, description, splitAmount } = req.body;
             const date = new Date();
 
-            console.log("Body",req.body);
-
             const transaction = await TransactionService.createTransaction(sender, recipient, total, splitAmount,  date, description || "");
             res.status(201).json(
                 transaction
